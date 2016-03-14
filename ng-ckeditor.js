@@ -37,7 +37,9 @@
         return {
             restrict: 'AC',
             require: ['ngModel', '^?form'],
-            scope: false,
+            scope: {
+                config: '=?ckeditor'
+            },
             link: function (scope, element, attrs, ctrls) {
                 var ngModel = ctrls[0];
                 var form = ctrls[1] || null;
@@ -51,33 +53,7 @@
                 }
 
                 var onLoad = function () {
-                    var options = {
-                        toolbar: 'full',
-                        toolbar_full: [ //jshint ignore:line
-                            {
-                                name: 'basicstyles',
-                                items: ['Bold', 'Italic', 'Strike', 'Underline']
-                            },
-                            {name: 'paragraph', items: ['BulletedList', 'NumberedList', 'Blockquote']},
-                            {name: 'editing', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock']},
-                            {name: 'links', items: ['Link', 'Unlink', 'Anchor']},
-                            {name: 'tools', items: ['SpellChecker', 'Maximize']},
-                            '/',
-                            {
-                                name: 'styles',
-                                items: ['Format', 'FontSize', 'TextColor', 'PasteText', 'PasteFromWord', 'RemoveFormat']
-                            },
-                            {name: 'insert', items: ['Image', 'Table', 'SpecialChar']},
-                            {name: 'forms', items: ['Outdent', 'Indent']},
-                            {name: 'clipboard', items: ['Undo', 'Redo']},
-                            {name: 'document', items: ['PageBreak', 'Source']}
-                        ],
-                        disableNativeSpellChecker: false,
-                        uiColor: '#FAFAFA',
-                        height: '400px',
-                        width: '100%'
-                    };
-                    options = angular.extend(options, scope[attrs.ckeditor]);
+                    var options = scope.config || {};
 
                     var instance = (isTextarea) ? CKEDITOR.replace(element[0], options) : CKEDITOR.inline(element[0], options),
                         configLoaderDef = $q.defer();
