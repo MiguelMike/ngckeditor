@@ -36,9 +36,12 @@
 
         return {
             restrict: 'AC',
+            priority: 1,
             require: ['ngModel', '^?form'],
             scope: {
-                config: '=?ckeditor'
+                config: '=?ckeditor',
+                readOnly: '=?ngReadonly',
+                disabled: '=?ngDisabled'
             },
             link: function (scope, element, attrs, ctrls) {
                 var ngModel = ctrls[0];
@@ -69,14 +72,17 @@
                             data = null;
                         }
                         $timeout(function () { // for key up event
+                            instance.dataProcessor.editor.setReadOnly(scope.readOnly || scope.disabled);
                             if (setPristine !== true || data !== ngModel.$viewValue) {
                                 ngModel.$setViewValue(data);
                             }
 
                             if (setPristine === true && form) {
-                                form.$setPristine();
+                                $timeout(function() {
+                                    form.$setPristine();
+                                });
                             }
-                        }, 0);
+                        });
                     }, onUpdateModelData = function (setPristine) {
                         if (!data.length) {
                             return;
@@ -86,6 +92,8 @@
                         isReady = false;
                         instance.setData(item, function () {
                             setModelData(setPristine);
+
+                            instance.dataProcessor.editor.setReadOnly(scope.readOnly || scope.disabled);
                             isReady = true;
                         });
                     };
@@ -110,7 +118,7 @@
                     ngModel.$render = function () {
                         data.push(ngModel.$viewValue);
                         if (isReady) {
-                            onUpdateModelData();
+                            onUpdateModelData(true);
                         }
                     };
                 };
