@@ -72,7 +72,7 @@
                             data = null;
                         }
                         $timeout(function () { // for key up event
-                            instance.dataProcessor.editor.setReadOnly(scope.readOnly || scope.disabled);
+                            instance.dataProcessor.editor.setReadOnly(scope.readOnly || scope.disabled || false);
                             if (setPristine !== true || data !== ngModel.$viewValue) {
                                 ngModel.$setViewValue(data);
                             }
@@ -93,7 +93,7 @@
                         instance.setData(item, function () {
                             setModelData(setPristine);
 
-                            instance.dataProcessor.editor.setReadOnly(scope.readOnly || scope.disabled);
+                            instance.dataProcessor.editor.setReadOnly(scope.readOnly || scope.disabled || false);
                             isReady = true;
                         });
                     };
